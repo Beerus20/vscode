@@ -33,17 +33,20 @@ RUN apt-get update && apt-get install -y \
     make \
     # Polices
     fonts-liberation \
-    && rm -rf /var/lib/apt/lists/*
+    zsh
+
+# RUN sh -c "$(curl -yfsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 # Téléchargement et installation de VSCode
 RUN wget -qO /tmp/vscode.deb 'https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64'
-RUN apt-get update
 RUN apt-get install -y /tmp/vscode.deb
 RUN rm /tmp/vscode.deb
 RUN rm -rf /var/lib/apt/lists/*
+RUN mkdir -p /workspace/.vscode /workspace/projets
 
 # Créer le répertoire de travail
-WORKDIR /workspace
+WORKDIR /workspace/projets
 
 # Commande par défaut : lancer VSCode
-ENTRYPOINT ["code", "--wait", "--no-sandbox", "--user-data-dir=/workspace/.vscode-data", "--verbose"]
+ENTRYPOINT ["code", "--wait", "--no-sandbox", "--password-store=basic", "--user-data-dir=/workspace/.vscode/user-data", "--extensions-dir=/workspace/.vscode/extensions", "."]
+# CMD ["/home/$USER_NAME/projets"]

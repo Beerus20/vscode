@@ -1,0 +1,14 @@
+# Fichiers Git
+.git/
+.gitignore
+
+# Fichiers de cache apt
+*.deb
+
+# Fichiers temporaires
+*.tmp
+*.log
+
+# Fichiers de backup
+*~
+*.bak

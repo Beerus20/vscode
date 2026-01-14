@@ -1,0 +1,38 @@
+# Fichiers Git
+.git/
+.gitignore
+.gitattributes
+
+# Fichiers sensibles
+.env
+.env.*
+*.key
+*.pem
+secrets/
+
+# Fichiers de build/cache
+*.log
+*.tmp
+*.cache
+
+# IDE et éditeurs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# Documentation
+README.md
+*.md
+docs/
+
+# Scripts locaux non nécessaires
+run.sh
+
+# Makefile (si non utilisé dans le container)
+makefile

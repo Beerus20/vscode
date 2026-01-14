@@ -6,14 +6,18 @@ services:
     devices:
       - /dev/dri:/dev/dri
       - /dev/snd:/dev/snd
-    environment:
-      - DISPLAY=${DISPLAY}
+    env_file: ["./.env"]
     volumes:
-      - /tmp/.X11-unix:/tmp/.X11-unix
-      - ${PROJECTS_DIR}:/workspace/projets
+      - "/tmp/.X11-unix:/tmp/.X11-unix"
+      - "${HOME}/${PROJECTS_DIR}:/workspace/projets"
+      - "${HOME}/${VSCODE_PATH}:/workspace/.vscode"
+      - "${HOME}/${GIT_CONFIG_PATH}:/root/.gitconfig:ro"
+      - "${HOME}/.config/git:/root/.config/git:ro"
+      - "${SSH_AUTH_SOCK}:/run/user/0/keyring/ssh"
     #user: "${UID}:${GID}"
     group_add:
       - audio
       - video
+    # hostname: one
     network_mode: "host"
-    #command: /workspace/projets
+    # command: /workspace/projets
