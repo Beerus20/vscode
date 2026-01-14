@@ -14,6 +14,7 @@ services:
       - "${HOME}/${GIT_CONFIG_PATH}:/root/.gitconfig:ro"
       - "${HOME}/.config/git:/root/.config/git:ro"
       - "${SSH_AUTH_SOCK}:/run/user/0/keyring/ssh"
+      - "~/.fonts:${HOME}/.fonts:ro"
     #user: "${UID}:${GID}"
     group_add:
       - audio

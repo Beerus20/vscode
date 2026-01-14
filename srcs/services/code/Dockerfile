@@ -33,9 +33,17 @@ RUN apt-get update && apt-get install -y \
     make \
     # Polices
     fonts-liberation \
+    fonts-noto-color-emoji \
+    fonts-symbola \
+    fonts-noto \
+    fonts-noto-cjk \
+    # Locales pour UTF-8
+    locales \
     zsh
 
-# RUN sh -c "$(curl -yfsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+# Configuration des locales pour le support UTF-8 et emojis
+RUN locale-gen en_US.UTF-8 && \
+    update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 
 # Téléchargement et installation de VSCode
 RUN wget -qO /tmp/vscode.deb 'https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64'
@@ -44,9 +52,14 @@ RUN rm /tmp/vscode.deb
 RUN rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /workspace/.vscode /workspace/projets
 
+COPY ./conf/zshrc /root/.zshrc
+COPY ./tools/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+# RUN chsh -s $(which zsh) root
+
 # Créer le répertoire de travail
 WORKDIR /workspace/projets
 
 # Commande par défaut : lancer VSCode
-ENTRYPOINT ["code", "--wait", "--no-sandbox", "--password-store=basic", "--user-data-dir=/workspace/.vscode/user-data", "--extensions-dir=/workspace/.vscode/extensions", "."]
+ENTRYPOINT ["/entrypoint.sh"]
 # CMD ["/home/$USER_NAME/projets"]
