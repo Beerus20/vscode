@@ -12,8 +12,9 @@ services:
       - "${HOME}/${PROJECTS_DIR}:/workspace/projets"
       - "${HOME}/${VSCODE_PATH}:/workspace/.vscode"
       - "${HOME}/${GIT_CONFIG_PATH}:/root/.gitconfig:ro"
-      - "${HOME}/.config/git:/root/.config/git:ro"
       - "${HOME}/${SSH_PATH}:/root/.ssh:ro"
+      - "${HOME}/.config/git:/root/.config/git:ro"
+      - "${SSH_AUTH_SOCK}:/run/user/0/keyring/ssh"
       - "~/.fonts:${HOME}/.fonts:ro"
     group_add:
       - audio
