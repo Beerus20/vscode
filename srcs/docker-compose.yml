@@ -1,0 +1,19 @@
+services:
+  one:
+    build: ./services/code
+    image: one:1.0
+    container_name: one
+    devices:
+      - /dev/dri:/dev/dri
+      - /dev/snd:/dev/snd
+    environment:
+      - DISPLAY=${DISPLAY}
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ${PROJECTS_DIR}:/workspace/projets
+    #user: "${UID}:${GID}"
+    group_add:
+      - audio
+      - video
+    network_mode: "host"
+    #command: /workspace/projets

@@ -1,5 +1,0 @@
-services:
-  one:
-    build: .
-    image: one:1.0
-    container_name: one
