@@ -15,6 +15,8 @@ services:
       - "${HOME}/.config/git:/root/.config/git:ro"
       - "${SSH_AUTH_SOCK}:/ssh-agent:ro"
       - "~/.fonts:${HOME}/.fonts:ro"
+    environment:
+      - SSH_AUTH_SOCK=/ssh-agent
     group_add:
       - audio
       - video
