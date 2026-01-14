@@ -13,7 +13,7 @@ services:
       - "${HOME}/${VSCODE_PATH}:/workspace/.vscode"
       - "${HOME}/${GIT_CONFIG_PATH}:/root/.gitconfig:ro"
       - "${HOME}/.config/git:/root/.config/git:ro"
-      - "${SSH_AUTH_SOCK}:/run/user/0/keyring/ssh"
+      - "${SSH_AUTH_SOCK}:/ssh-agent:ro"
       - "~/.fonts:${HOME}/.fonts:ro"
     group_add:
       - audio
