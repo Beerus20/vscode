@@ -15,10 +15,7 @@ services:
       - "${HOME}/.config/git:/root/.config/git:ro"
       - "${SSH_AUTH_SOCK}:/run/user/0/keyring/ssh"
       - "~/.fonts:${HOME}/.fonts:ro"
-    #user: "${UID}:${GID}"
     group_add:
       - audio
       - video
-    # hostname: one
     network_mode: "host"
-    # command: /workspace/projets
