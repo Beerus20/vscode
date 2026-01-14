@@ -1,6 +1,9 @@
 services:
   one:
-    build: ./services/code
+    build:
+      context: ./services/code
+      args:
+        HOME: ${HOME}
     image: one:1.0
     container_name: one
     devices:
@@ -9,10 +12,10 @@ services:
     env_file: ["./.env"]
     volumes:
       - "/tmp/.X11-unix:/tmp/.X11-unix"
-      - "${HOME}/${PROJECTS_DIR}:/workspace/projets"
-      - "${HOME}/${VSCODE_PATH}:/workspace/.vscode"
-      - "${HOME}/${GIT_CONFIG_PATH}:/root/.gitconfig:ro"
-      - "${HOME}/${SSH_PATH}:/root/.ssh:ro"
+      - "${HOME}/${HOST_DIR}:${HOME}/projets"
+      - "${HOME}/${VSCODE_PATH}:${HOME}/.vscode"
+      - "${HOME}/${GIT_CONFIG_FILE}:/root/.gitconfig:ro"
+      - "${HOME}/${SSH_DIR}:/root/${SSH_DIR}:ro"
       - "${HOME}/.config/git:/root/.config/git:ro"
       - "${SSH_AUTH_SOCK}:/run/user/0/keyring/ssh"
       - "~/.fonts:${HOME}/.fonts:ro"

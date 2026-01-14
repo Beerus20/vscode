@@ -1,7 +1,31 @@
 #! /bin/bash
 
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-cp /root/.zshrc $HOME/.zshrc
-cp /root/.gitconfig $HOME/.gitconfig
+set -e
+
+PROJECT_DIR="."
+
+if [ -n "$PROJECT_REPO" ]; then
+	if [ -n "$PROJECT_NAME" ]; then
+		PROJECT_DIR="$HOME/$PROJECT_NAME"
+	else
+		PROJECT_DIR="$HOME/$(basename $PROJECT_REPO .git)"
+	fi
+	echo "Cloning $PROJECT_REPO into $PROJECT_DIR"
+	git clone git@github.com:$PROJECT_REPO "$PROJECT_DIR"
+else
+	PROJECT_DIR="$HOME/projets"
+fi
+
+if [ -f /tmp/.zshrc ]; then
+  mv /tmp/.zshrc $HOME/.zshrc
+fi
+
 chsh -s $(which zsh) root
-code --wait --no-sandbox --password-store=basic --user-data-dir=/workspace/.vscode/user-data --extensions-dir=/workspace/.vscode/extensions .
+echo "Starting VSCode..."
+code \
+	--wait \
+	--no-sandbox \
+	--password-store=basic \
+	--user-data-dir=$HOME/.vscode/user-data \
+	--extensions-dir=$HOME/.vscode/extensions \
+	$PROJECT_DIR

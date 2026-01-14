@@ -1,8 +1,14 @@
 # Image de base Ubuntu
 FROM ubuntu:22.04
 
+ARG HOME=/home/user
 # Éviter les questions interactives pendant l'installation
 ENV DEBIAN_FRONTEND=noninteractive
+
+COPY ./conf/zshrc /tmp/.zshrc
+COPY ./tools/entrypoint.sh /entrypoint.sh
+COPY ./tools/packages.txt /tmp/packages.txt
+RUN chmod +x /entrypoint.sh
 
 # Mise à jour et installation des dépendances
 RUN apt-get update && apt-get install -y \
@@ -22,11 +28,9 @@ RUN apt-get update && apt-get install -y \
     curl \
     ca-certificates \
     git \
-    # SDL2 et ses extensions
-    libsdl2-dev \
-    libsdl2-image-dev \
-    libsdl2-ttf-dev \
-    libsdl2-mixer-dev \
+    git-flow \
+    # Packages supplémentaires depuis le fichier packages.txt
+    $(cat /tmp/packages.txt | xargs) \
     # Compilateurs
     gcc \
     g++ \
@@ -46,19 +50,16 @@ RUN locale-gen en_US.UTF-8 && \
     update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 
 # Téléchargement et installation de VSCode
-RUN wget -qO /tmp/vscode.deb 'https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64'
-RUN apt-get install -y /tmp/vscode.deb
-RUN rm /tmp/vscode.deb
-RUN rm -rf /var/lib/apt/lists/*
-RUN mkdir -p /workspace/.vscode /workspace/projets
+RUN wget -qO /tmp/vscode.deb 'https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64' \
+    && apt-get install -y /tmp/vscode.deb \
+    && rm /tmp/vscode.deb \
+    && rm -rf /var/lib/apt/lists/*
 
-COPY ./conf/zshrc /root/.zshrc
-COPY ./tools/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 # RUN chsh -s $(which zsh) root
 
 # Créer le répertoire de travail
-WORKDIR /workspace/projets
+WORKDIR ${HOME}
 
 # Commande par défaut : lancer VSCode
 ENTRYPOINT ["/entrypoint.sh"]
