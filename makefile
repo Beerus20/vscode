@@ -16,7 +16,7 @@ down		:
 				docker compose -f $(FILE) down
 
 fclean		: down
-				docker rmi $(shell docker images -q)
+				docker compose -f $(FILE) down --rmi local
 
 re			: fclean all
 
