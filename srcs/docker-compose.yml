@@ -14,10 +14,10 @@ services:
       - "/tmp/.X11-unix:/tmp/.X11-unix"
       - "${HOME}/${HOST_DIR}:${HOME}/projets"
       - "${HOME}/${VSCODE_PATH}:${HOME}/.vscode"
-      - "${HOME}/${GIT_CONFIG_FILE}:/root/.gitconfig:ro"
+      - "${HOME}/${GIT_CONFIG_FILE}:${HOME}/.gitconfig:ro"
       - "${HOME}/${SSH_DIR}:/root/${SSH_DIR}:ro"
       - "${HOME}/.config/git:/root/.config/git:ro"
-      - "${SSH_AUTH_SOCK}:/run/user/0/keyring/ssh"
+      - "/run/user/${UID}/keyring/ssh:/run/user/0/keyring/ssh"
       - "~/.fonts:${HOME}/.fonts:ro"
     group_add:
       - audio

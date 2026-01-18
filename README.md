@@ -72,6 +72,7 @@ DISPLAY=:0                      # Display X11 (généralement :0 sur Linux)
 # User settings - Chemins utilisateur
 # ═══════════════════════════════════════════════════════════
 HOME=/home/votre_utilisateur    # Votre répertoire home (IMPORTANT: à modifier)
+UID=1000                        # Votre UID utilisateur (voir avec 'id -u')
 
 # ═══════════════════════════════════════════════════════════
 # Project settings - Clonage automatique (OPTIONNEL)
@@ -93,15 +94,13 @@ VSCODE_PATH=goinfre/vscode      # Répertoire VSCode sur l'hôte (relatif à $HO
 GIT_CONFIG_FILE=.gitconfig      # Fichier de config Git (relatif à $HOME)
 GIT_CONFIG_DIR=.config/git      # Répertoire de config Git supplémentaire
 SSH_DIR=.ssh                    # Répertoire des clés SSH (relatif à $HOME)
-SSH_AUTH_SOCK=/run/user/1000/keyring/ssh  # Socket SSH Agent (ajustez UID si différent)
 ```
 
-**⚠️ Important** : Ajustez `SSH_AUTH_SOCK` avec votre UID :
+**⚠️ Important** : La variable `UID` est utilisée pour monter correctement le socket SSH Agent :
 ```bash
 # Trouver votre UID
 id -u
-# Si le résultat est 1000, utilisez: /run/user/1000/keyring/ssh
-# Si le résultat est 1001, utilisez: /run/user/1001/keyring/ssh
+# Utilisez cette valeur dans la variable UID du fichier .env
 ```
 
 #### 2. Ajouter des packages supplémentaires (optionnel)
@@ -165,11 +164,14 @@ make up
 #### Utilisation quotidienne
 
 ```bash
-# Tout en une seule commande
+# Tout en une seule commande (lance en arrière-plan)
 make
 
 # Ou utiliser docker compose directement
-docker compose -f srcs/docker-compose.yml up
+docker compose -f srcs/docker-compose.yml up -d
+
+# Pour voir les logs après le démarrage
+docker compose -f srcs/docker-compose.yml logs -f
 ```
 
 #### Avec clonage automatique
@@ -409,12 +411,9 @@ GIT_CONFIG_DIR=.config/git   # Dossier de config Git additionnel
 SSH_DIR=.ssh                 # Dossier des clés SSH
                              # Contient: id_rsa, id_ed25519, known_hosts
                              # Monté en lecture seule pour sécurité
-
-SSH_AUTH_SOCK=/run/user/1000/keyring/ssh
-                             # Socket de l'agent SSH
-                             # Permet l'auth sans copier les clés
-                             # Ajuster 1000 avec votre UID (id -u)
 ```
+
+**Note** : Le socket SSH Agent est automatiquement monté en utilisant la variable `UID` définie dans le fichier `.env`.
 
 ### Dockerfile - Explication détaillée
 
@@ -545,9 +544,10 @@ volumes:
     # Survit à la destruction du container
     
   # Git Config - Lecture seule (:ro)
-  - "${HOME}/${GIT_CONFIG_FILE}:/root/.gitconfig:ro"
+  - "${HOME}/${GIT_CONFIG_FILE}:${HOME}/.gitconfig:ro"
     # :ro = read-only, sécurité
     # Container ne peut pas modifier votre config Git
+    # Monté dans le home du container (pas /root)
     
   # SSH Keys - Lecture seule (:ro)
   - "${HOME}/${SSH_DIR}:/root/${SSH_DIR}:ro"
@@ -559,8 +559,9 @@ volumes:
     # Config Git additionnelle (ignore, attributes)
     
   # SSH Agent Socket
-  - "${SSH_AUTH_SOCK}:/run/user/0/keyring/ssh"
-    # Forwarding de l'agent SSH
+  - "/run/user/${UID}/keyring/ssh:/run/user/0/keyring/ssh"
+    # Forwarding de l'agent SSH via UID
+    # La variable UID est définie dans .env
     # Permet l'auth sans exposer les clés privées
     
   # Fonts - Lecture seule
@@ -1195,7 +1196,7 @@ docker exec -it one groups
 ```bash
 # Sur l'hôte, vérifier SSH Agent
 echo $SSH_AUTH_SOCK
-# Doit afficher un chemin : /run/user/1000/keyring/ssh
+# Doit afficher un chemin comme : /run/user/1000/keyring/ssh
 
 # Vérifier que l'agent a les clés
 ssh-add -l
@@ -1222,15 +1223,15 @@ ssh-add ~/.ssh/id_rsa
 ssh-add -l
 ```
 
-**2. Mettre à jour SSH_AUTH_SOCK dans .env** :
+**2. Vérifier votre UID dans .env** :
 ```bash
 # Trouver votre UID
 id -u
 # Exemple : 1000
 
-# Dans srcs/.env, ajuster :
-SSH_AUTH_SOCK=/run/user/1000/keyring/ssh
-#                      ^^^^ votre UID
+# Dans srcs/.env, vérifier que UID correspond :
+UID=1000
+#   ^^^^ doit correspondre à votre UID
 ```
 
 **3. Vérifier les permissions des clés** :

@@ -9,7 +9,7 @@ build		:
 
 up			:
 				xhost +local:docker > /dev/null 2>&1
-				docker compose -f $(FILE) up
+				docker compose -f $(FILE) up -d
 
 down		:
 				xhost -local:docker > /dev/null 2>&1
