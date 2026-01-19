@@ -20,7 +20,7 @@ fclean		: down
 
 re			: fclean all
 
-run-repo	:
+run-repo	: down
 				@echo "\033[1;36m╔════════════════════════════════════════════════════════╗\033[0m"
 				@echo "\033[1;36m║        📦 Configuration du Repository GitHub         ║\033[0m"
 				@echo "\033[1;36m╚════════════════════════════════════════════════════════╝\033[0m"
