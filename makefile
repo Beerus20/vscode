@@ -5,7 +5,7 @@ FILE		:= $(DIR)/$(FILENAME)
 all			: build up
 
 build		:
-				docker compose -f $(FILE) build
+				docker compose -f $(FILE) build --no-cache
 
 up			:
 				xhost +local:docker > /dev/null 2>&1

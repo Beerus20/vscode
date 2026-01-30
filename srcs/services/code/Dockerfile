@@ -1,5 +1,5 @@
 # Image de base Ubuntu
-FROM ubuntu:22.04
+FROM debian:stable-slim
 
 ARG HOME=/home/user
 # Éviter les questions interactives pendant l'installation
@@ -36,18 +36,18 @@ RUN apt-get update && apt-get install -y \
     g++ \
     make \
     # Polices
-    fonts-liberation \
-    fonts-noto-color-emoji \
-    fonts-symbola \
-    fonts-noto \
-    fonts-noto-cjk \
+    #fonts-liberation \
+    #fonts-noto-color-emoji \
+    #fonts-symbola \
+    #fonts-noto \
+    #fonts-noto-cjk \
     # Locales pour UTF-8
-    locales \
+    #locales \
     zsh
 
 # Configuration des locales pour le support UTF-8 et emojis
-RUN locale-gen en_US.UTF-8 && \
-    update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
+#RUN locale-gen en_US.UTF-8 && \
+#    update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 
 # Téléchargement et installation de VSCode
 RUN wget -qO /tmp/vscode.deb 'https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64' \
